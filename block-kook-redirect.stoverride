@@ -4,7 +4,7 @@ icon: https://www.kookapp.cn/favicon.ico
 
 http:
   rewrite:
-    # 屏蔽第三方追踪统计
+    # 屏蔽第三方追踪统计（简单域名前缀，不含正则锚点）
     - ^https?:\/\/open\.e\.kuaishou\.com\/ - reject
     - ^https?:\/\/umt-data-u1\.ubixioe\.com\/ - reject
 
@@ -24,7 +24,7 @@ http:
       timeout: 10
       argument:
 
-    # 网页版：拦截 JS/href 跳转（只处理 HTML 页面）
+    # 网页版：拦截 JS/href 跳转（只处理 HTML 页面，跳过 /api/ 路径）
     - match: ^https?:\/\/(www\.|m\.)?kookapp\.cn\/(?!api\/)
       name: block-kook-redirect
       type: response
@@ -41,9 +41,9 @@ http:
 
     # App 端：拦截所有 KOOK API，脚本内部按端点决定是否清空
     - match: kookapp\.cn/api/
-      name: block-kook-ads-api
-      type: response
-      require-body: true
+      name: block-kook-ads-req
+      type: request
+      require-body: false
       timeout: 10
       argument:
 
@@ -63,6 +63,6 @@ script-providers:
   block-kook-redirect:
     url: https://raw.githubusercontent.com/yangliang2016/kookappblockads/main/block-kook-redirect.js
     interval: 86400
-  block-kook-ads-api:
+  block-kook-ads-req:
     url: https://raw.githubusercontent.com/yangliang2016/kookappblockads/main/block-kook-ads-api.js
     interval: 86400
