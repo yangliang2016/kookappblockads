@@ -1,0 +1,59 @@
+name: 屏蔽 KOOK App 跳转
+desc: 阻止 KOOK (开黑啦) 通过 Universal Link 及网页脚本自动唤起 App，链接保持在浏览器中打开
+icon: https://www.kookapp.cn/favicon.ico
+
+http:
+  # ═══════════════════════════════════════════════════════════════
+  # 一、拦截 AASA 文件 → 破坏 Universal Link 注册
+  #
+  # iOS 在 App 安装/更新时请求 apple-app-site-association 来注册
+  # 关联域名。返回空 200 后系统不会注册，链接将在浏览器中打开。
+  # 注意：需重装 KOOK App 后才会重新请求，已注册的需先删 App。
+  # ═══════════════════════════════════════════════════════════════
+  url-rewrite:
+    - ^https?://www\.kookapp\.cn/apple-app-site-association$ reject-200
+    - ^https?://www\.kookapp\.cn/\.well-known/apple-app-site-association$ reject-200
+    - ^https?://kookapp\.cn/apple-app-site-association$ reject-200
+    - ^https?://kookapp\.cn/\.well-known/apple-app-site-association$ reject-200
+    - ^https?://m\.kookapp\.cn/apple-app-site-association$ reject-200
+    - ^https?://m\.kookapp\.cn/\.well-known/apple-app-site-association$ reject-200
+    # 旧域名（开黑啦时期）
+    - ^https?://www\.kaiheila\.cn/apple-app-site-association$ reject-200
+    - ^https?://www\.kaiheila\.cn/\.well-known/apple-app-site-association$ reject-200
+    - ^https?://kaiheila\.cn/apple-app-site-association$ reject-200
+    - ^https?://kaiheila\.cn/\.well-known/apple-app-site-association$ reject-200
+
+  # ═══════════════════════════════════════════════════════════════
+  # 二、MitM 域名（HTTPS 解密，脚本注入前提）
+  # ═══════════════════════════════════════════════════════════════
+  mitm:
+    - www.kookapp.cn
+    - m.kookapp.cn
+    - kookapp.cn
+    - www.kaiheila.cn
+    - kaiheila.cn
+
+  # ═══════════════════════════════════════════════════════════════
+  # 三、Response 脚本注入
+  # 替换 HTML 中的 kook:// / kaiheila:// scheme，并注入防御脚本
+  # ═══════════════════════════════════════════════════════════════
+  script:
+    - match: ^https?://(www\.|m\.)?kookapp\.cn/
+      name: block-kook-redirect
+      type: response
+      require-body: true
+      timeout: 10
+      binary-body-mode: false
+
+    - match: ^https?://(www\.)?kaiheila\.cn/
+      name: block-kook-redirect
+      type: response
+      require-body: true
+      timeout: 10
+      binary-body-mode: false
+
+script-providers:
+  block-kook-redirect:
+    # 将 block-kook-redirect.js 托管到你的 GitHub 或私有服务器后改此 URL
+    # 也可在 Stash「脚本」→「本地脚本」中导入 .js 文件，然后引用本地路径
+    url: https://github.com/yangliang2016/kookappblockads/blob/main/block-kook-redirect.js    update-interval: 86400
