@@ -4,16 +4,26 @@ icon: https://www.kookapp.cn/favicon.ico
 
 http:
   url-rewrite:
-    - ^https?://www\.kookapp\.cn/apple-app-site-association$ reject-200
-    - ^https?://www\.kookapp\.cn/\.well-known/apple-app-site-association$ reject-200
-    - ^https?://kookapp\.cn/apple-app-site-association$ reject-200
-    - ^https?://kookapp\.cn/\.well-known/apple-app-site-association$ reject-200
-    - ^https?://m\.kookapp\.cn/apple-app-site-association$ reject-200
-    - ^https?://m\.kookapp\.cn/\.well-known/apple-app-site-association$ reject-200
-    - ^https?://www\.kaiheila\.cn/apple-app-site-association$ reject-200
-    - ^https?://www\.kaiheila\.cn/\.well-known/apple-app-site-association$ reject-200
-    - ^https?://kaiheila\.cn/apple-app-site-association$ reject-200
-    - ^https?://kaiheila\.cn/\.well-known/apple-app-site-association$ reject-200
+    - match: ^https?://www\.kookapp\.cn/apple-app-site-association$
+      type: reject-200
+    - match: ^https?://www\.kookapp\.cn/\.well-known/apple-app-site-association$
+      type: reject-200
+    - match: ^https?://kookapp\.cn/apple-app-site-association$
+      type: reject-200
+    - match: ^https?://kookapp\.cn/\.well-known/apple-app-site-association$
+      type: reject-200
+    - match: ^https?://m\.kookapp\.cn/apple-app-site-association$
+      type: reject-200
+    - match: ^https?://m\.kookapp\.cn/\.well-known/apple-app-site-association$
+      type: reject-200
+    - match: ^https?://www\.kaiheila\.cn/apple-app-site-association$
+      type: reject-200
+    - match: ^https?://www\.kaiheila\.cn/\.well-known/apple-app-site-association$
+      type: reject-200
+    - match: ^https?://kaiheila\.cn/apple-app-site-association$
+      type: reject-200
+    - match: ^https?://kaiheila\.cn/\.well-known/apple-app-site-association$
+      type: reject-200
 
   mitm:
     - www.kookapp.cn
