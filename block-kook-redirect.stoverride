@@ -1,53 +1,68 @@
-name: 屏蔽 KOOK App 跳转
-desc: 阻止 KOOK (开黑啦) 通过 Universal Link 及网页脚本自动唤起 App，链接保持在浏览器中打开
+name: 屏蔽 KOOK App 广告和跳转
+desc: 拦截 KOOK (开黑啦) 广告弹窗、商城推广及 Universal Link App 跳转
 icon: https://www.kookapp.cn/favicon.ico
 
 http:
-  url-rewrite:
-    - match: ^https?://www\.kookapp\.cn/apple-app-site-association$
-      type: reject-200
-    - match: ^https?://www\.kookapp\.cn/\.well-known/apple-app-site-association$
-      type: reject-200
-    - match: ^https?://kookapp\.cn/apple-app-site-association$
-      type: reject-200
-    - match: ^https?://kookapp\.cn/\.well-known/apple-app-site-association$
-      type: reject-200
-    - match: ^https?://m\.kookapp\.cn/apple-app-site-association$
-      type: reject-200
-    - match: ^https?://m\.kookapp\.cn/\.well-known/apple-app-site-association$
-      type: reject-200
-    - match: ^https?://www\.kaiheila\.cn/apple-app-site-association$
-      type: reject-200
-    - match: ^https?://www\.kaiheila\.cn/\.well-known/apple-app-site-association$
-      type: reject-200
-    - match: ^https?://kaiheila\.cn/apple-app-site-association$
-      type: reject-200
-    - match: ^https?://kaiheila\.cn/\.well-known/apple-app-site-association$
-      type: reject-200
-
-  mitm:
-    - www.kookapp.cn
-    - m.kookapp.cn
-    - kookapp.cn
-    - www.kaiheila.cn
-    - kaiheila.cn
+  rewrite:
+    # 屏蔽第三方追踪统计（简单域名前缀，不含正则锚点）
+    - ^https?:\/\/open\.e\.kuaishou\.com\/ - reject
+    - ^https?:\/\/umt-data-u1\.ubixioe\.com\/ - reject
 
   script:
-    - match: ^https?://(www\.|m\.)?kookapp\.cn/
-      name: block-kook-redirect
-      type: response
-      require-body: true
+    # Universal Link 阻断：返回空 AASA，让 iOS 放弃注册跳转
+    - match: ^https?:\/\/(www\.|m\.)?kookapp\.cn\/(\.well-known\/)?apple-app-site-association
+      name: block-kook-aasa
+      type: request
+      require-body: false
       timeout: 10
-      binary-body-mode: false
+      argument:
 
-    - match: ^https?://(www\.)?kaiheila\.cn/
+    - match: ^https?:\/\/(www\.)?kaiheila\.cn\/(\.well-known\/)?apple-app-site-association
+      name: block-kook-aasa
+      type: request
+      require-body: false
+      timeout: 10
+      argument:
+
+    # 网页版：拦截 JS/href 跳转（只处理 HTML 页面，跳过 /api/ 路径）
+    - match: ^https?:\/\/(www\.|m\.)?kookapp\.cn\/(?!api\/)
       name: block-kook-redirect
       type: response
       require-body: true
       timeout: 10
-      binary-body-mode: false
+      argument:
+
+    - match: ^https?:\/\/(www\.)?kaiheila\.cn\/(?!api\/)
+      name: block-kook-redirect
+      type: response
+      require-body: true
+      timeout: 10
+      argument:
+
+    # App 端：拦截广告/商城 API，清空返回数据防止弹窗
+    - match: ^https?:\/\/www\.kookapp\.cn\/api\/v\d+\/(ad-placement|product|product-category|item\/token-count|promotion|activity|splash|popup|banner|announce|gift)
+      name: block-kook-ads-api
+      type: response
+      require-body: true
+      timeout: 10
+      argument:
+
+  mitm:
+    - "www.kookapp.cn"
+    - "m.kookapp.cn"
+    - "kookapp.cn"
+    - "www.kaiheila.cn"
+    - "kaiheila.cn"
+    - "open.e.kuaishou.com"
+    - "umt-data-u1.ubixioe.com"
 
 script-providers:
+  block-kook-aasa:
+    url: https://raw.githubusercontent.com/yangliang2016/kookappblockads/main/block-kook-aasa.js
+    interval: 86400
   block-kook-redirect:
     url: https://raw.githubusercontent.com/yangliang2016/kookappblockads/main/block-kook-redirect.js
-    update-interval: 86400
+    interval: 86400
+  block-kook-ads-api:
+    url: https://raw.githubusercontent.com/yangliang2016/kookappblockads/main/block-kook-ads-api.js
+    interval: 86400
