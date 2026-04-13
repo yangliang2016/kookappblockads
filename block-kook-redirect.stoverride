@@ -4,25 +4,25 @@ icon: https://www.kookapp.cn/favicon.ico
 
 http:
   rewrite:
-    # 屏蔽第三方追踪统计（简单域名前缀，不含正则锚点）
-    - ^https?:\/\/open\.e\.kuaishou\.com\/ - reject
-    - ^https?:\/\/umt-data-u1\.ubixioe\.com\/ - reject
+    # 屏蔽第三方追踪统计
+    - ^https?://open\.e\.kuaishou\.com/ reject-200
+    - ^https?://umt-data-u1\.ubixioe\.com/ reject-200
     # 屏蔽美团相关域名（Kook 内嵌美团卡片 / 跳转）
-    - ^https?:\/\/[^/]*\.meituan\.net\/ - reject
-    - ^https?:\/\/[^/]*\.meituan\.com\/ - reject
-    - ^https?:\/\/[^/]*\.dpfile\.com\/ - reject
-    - ^https?:\/\/[^/]*\.dianping\.com\/ - reject
+    - ^https?://[^/]*\.meituan\.net/ reject-200
+    - ^https?://[^/]*\.meituan\.com/ reject-200
+    - ^https?://[^/]*\.dpfile\.com/ reject-200
+    - ^https?://[^/]*\.dianping\.com/ reject-200
 
   script:
     # Universal Link 阻断：返回空 AASA，让 iOS 放弃注册跳转
-    - match: ^https?:\/\/(www\.|m\.)?kookapp\.cn\/(\.well-known\/)?apple-app-site-association
+    - match: ^https?://(www\.|m\.)?kookapp\.cn/(\.well-known/)?apple-app-site-association
       name: block-kook-aasa
       type: request
       require-body: false
       timeout: 10
       argument:
 
-    - match: ^https?:\/\/(www\.)?kaiheila\.cn\/(\.well-known\/)?apple-app-site-association
+    - match: ^https?://(www\.)?kaiheila\.cn/(\.well-known/)?apple-app-site-association
       name: block-kook-aasa
       type: request
       require-body: false
@@ -30,33 +30,48 @@ http:
       argument:
 
     # 网页版：拦截 JS/href 跳转（只处理 HTML 页面，跳过 /api/ 路径）
-    - match: ^https?:\/\/(www\.|m\.)?kookapp\.cn\/(?!api\/)
+    - match: ^https?://(www\.|m\.)?kookapp\.cn/(?!api/)
       name: block-kook-redirect
       type: response
       require-body: true
       timeout: 10
       argument:
 
-    - match: ^https?:\/\/(www\.)?kaiheila\.cn\/(?!api\/)
+    - match: ^https?://(www\.)?kaiheila\.cn/(?!api/)
       name: block-kook-redirect
       type: response
       require-body: true
       timeout: 10
       argument:
 
-    # App 端：拦截 KOOK API（含 /api/ 及其他路径），脚本内部按端点决定是否清空
-    - match: ^https?:\/\/[^/]*\.?kookapp\.cn\/
+    # App 端 - 请求阶段：已知广告端点直接返回空，不发出网络请求
+    - match: ^https?://[^/]*\.?kookapp\.cn/
       name: block-kook-ads-req
       type: request
       require-body: false
       timeout: 10
       argument:
 
-    - match: ^https?:\/\/[^/]*\.?kaiheila\.cn\/
+    - match: ^https?://[^/]*\.?kaiheila\.cn/
       name: block-kook-ads-req
       type: request
       require-body: false
       timeout: 10
+      argument:
+
+    # App 端 - 响应阶段：递归清除所有 API JSON 响应中的广告字段（含开屏广告）
+    - match: ^https?://[^/]*\.?kookapp\.cn/api/
+      name: block-kook-ads-resp
+      type: response
+      require-body: true
+      timeout: 15
+      argument:
+
+    - match: ^https?://[^/]*\.?kaiheila\.cn/api/
+      name: block-kook-ads-resp
+      type: response
+      require-body: true
+      timeout: 15
       argument:
 
   mitm:
@@ -77,4 +92,7 @@ script-providers:
     interval: 86400
   block-kook-ads-req:
     url: https://raw.githubusercontent.com/yangliang2016/kookappblockads/main/block-kook-ads-api.js
+    interval: 86400
+  block-kook-ads-resp:
+    url: https://raw.githubusercontent.com/yangliang2016/kookappblockads/main/block-kook-ads-response.js
     interval: 86400
