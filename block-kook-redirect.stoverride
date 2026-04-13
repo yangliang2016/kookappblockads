@@ -7,6 +7,11 @@ http:
     # 屏蔽第三方追踪统计（简单域名前缀，不含正则锚点）
     - ^https?:\/\/open\.e\.kuaishou\.com\/ - reject
     - ^https?:\/\/umt-data-u1\.ubixioe\.com\/ - reject
+    # 屏蔽美团相关域名（Kook 内嵌美团卡片 / 跳转）
+    - ^https?:\/\/[^/]*\.meituan\.net\/ - reject
+    - ^https?:\/\/[^/]*\.meituan\.com\/ - reject
+    - ^https?:\/\/[^/]*\.dpfile\.com\/ - reject
+    - ^https?:\/\/[^/]*\.dianping\.com\/ - reject
 
   script:
     # Universal Link 阻断：返回空 AASA，让 iOS 放弃注册跳转

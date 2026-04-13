@@ -18,6 +18,12 @@ var AD_PATTERNS = [
   /\/advertis/,
   /\/announce/,
   /\/gift\/(list|recommend)/,
+  /\/card\/recommend/,
+  /\/open-screen/,
+  /\/recommend/,
+  /\/coupon/,
+  /\/task\/list/,
+  /\/redpacket/,
 ];
 
 var isAdEndpoint = AD_PATTERNS.some(function(p) { return p.test(url); });
