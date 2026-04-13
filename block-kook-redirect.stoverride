@@ -44,8 +44,15 @@ http:
       timeout: 10
       argument:
 
-    # App 端：拦截所有 KOOK API，脚本内部按端点决定是否清空
-    - match: kookapp\.cn/api/
+    # App 端：拦截 KOOK API（含 /api/ 及其他路径），脚本内部按端点决定是否清空
+    - match: ^https?:\/\/[^/]*\.?kookapp\.cn\/
+      name: block-kook-ads-req
+      type: request
+      require-body: false
+      timeout: 10
+      argument:
+
+    - match: ^https?:\/\/[^/]*\.?kaiheila\.cn\/
       name: block-kook-ads-req
       type: request
       require-body: false

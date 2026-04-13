@@ -5,25 +5,37 @@
 var url = $request.url;
 
 var AD_PATTERNS = [
+  // 开屏 / 启动广告
+  /\/splash/,
+  /\/startup/,
+  /\/launch-page/,
+  /\/open-screen/,
+  /\/open-ad/,
+  /\/preload/,
+  // 弹窗 / banner
+  /\/popup/,
+  /\/banner/,
   /\/ad-placement/,
+  /\/advertis/,
+  // 推荐 / 发现
+  /\/recommend/,
+  /\/card\/recommend/,
+  /\/home-recommend/,
+  /\/discovery/,
+  /\/explore/,
+  // 商城 / 活动
   /\/product\/list/,
   /\/product\/red-dot/,
   /\/product-category\/index/,
   /\/item\/token-count/,
   /\/promotion/,
-  /\/splash/,
-  /\/popup/,
-  /\/banner/,
   /\/activity/,
-  /\/advertis/,
-  /\/announce/,
-  /\/gift\/(list|recommend)/,
-  /\/card\/recommend/,
-  /\/open-screen/,
-  /\/recommend/,
   /\/coupon/,
-  /\/task\/list/,
   /\/redpacket/,
+  /\/gift\/(list|recommend)/,
+  /\/task\/list/,
+  // 公告 / 徽标
+  /\/announce/,
 ];
 
 var isAdEndpoint = AD_PATTERNS.some(function(p) { return p.test(url); });
@@ -38,6 +50,6 @@ $done({
   response: {
     status: 200,
     headers: { 'Content-Type': 'application/json; charset=utf-8' },
-    body: '{"code":0,"data":{}}'
+    body: '{"code":0,"data":{"list":[],"items":[],"ads":[],"total":0,"has_more":false}}'
   }
 });
