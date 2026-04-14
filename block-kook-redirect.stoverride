@@ -4,14 +4,33 @@ icon: https://www.kookapp.cn/favicon.ico
 
 http:
   rewrite:
-    # 屏蔽第三方追踪统计
+    # ── 第三方追踪统计 ──────────────────────────────────────────────────────
     - ^https?://open\.e\.kuaishou\.com/ - reject
     - ^https?://umt-data-u1\.ubixioe\.com/ - reject
-    # 屏蔽美团相关域名（Kook 内嵌美团卡片 / 跳转）
+    # 淘宝 / 高德联盟追踪（Kook 内嵌 Alibaba SDK）
+    - ^https?://[^/]*\.taobao\.com/ - reject
+    - ^https?://[^/]*\.amap\.com/ - reject
+    - ^https?://[^/]*\.mmstat\.com/ - reject
+    # 美团相关域名
     - ^https?://[^/]*\.meituan\.net/ - reject
     - ^https?://[^/]*\.meituan\.com/ - reject
     - ^https?://[^/]*\.dpfile\.com/ - reject
     - ^https?://[^/]*\.dianping\.com/ - reject
+
+    # ── KOOK 广告 / 推广 API（直接 reject，不走脚本缓存）─────────────────
+    - ^https?://[^/]*\.?kookapp\.cn/api/[^?]*promotion - reject
+    - ^https?://[^/]*\.?kookapp\.cn/api/[^?]*discover - reject
+    - ^https?://[^/]*\.?kookapp\.cn/api/[^?]*ad-placement - reject
+    - ^https?://[^/]*\.?kookapp\.cn/api/[^?]*splash - reject
+    - ^https?://[^/]*\.?kookapp\.cn/api/[^?]*startup - reject
+    - ^https?://[^/]*\.?kookapp\.cn/api/[^?]*banner - reject
+    - ^https?://[^/]*\.?kookapp\.cn/api/[^?]*popup - reject
+    - ^https?://[^/]*\.?kookapp\.cn/api/[^?]*product/list - reject
+    - ^https?://[^/]*\.?kookapp\.cn/api/[^?]*product/red-dot - reject
+    - ^https?://[^/]*\.?kookapp\.cn/api/[^?]*announce - reject
+    - ^https?://[^/]*\.?kaiheila\.cn/api/[^?]*promotion - reject
+    - ^https?://[^/]*\.?kaiheila\.cn/api/[^?]*discover - reject
+    - ^https?://[^/]*\.?kaiheila\.cn/api/[^?]*ad-placement - reject
 
   script:
     # Universal Link 阻断：返回空 AASA，让 iOS 放弃注册跳转
@@ -59,7 +78,7 @@ http:
       timeout: 10
       argument:
 
-    # App 端 - 响应阶段：递归清除所有 API JSON 响应中的广告字段（含开屏广告）
+    # App 端 - 响应阶段：清除 API JSON 响应中的广告字段（兜底）
     - match: ^https?://[^/]*\.?kookapp\.cn/api/
       name: block-kook-ads-resp
       type: response
@@ -86,13 +105,13 @@ http:
 script-providers:
   block-kook-aasa:
     url: https://raw.githubusercontent.com/yangliang2016/kookappblockads/main/block-kook-aasa.js
-    interval: 86400
+    interval: 3600
   block-kook-redirect:
     url: https://raw.githubusercontent.com/yangliang2016/kookappblockads/main/block-kook-redirect.js
-    interval: 86400
+    interval: 3600
   block-kook-ads-req:
     url: https://raw.githubusercontent.com/yangliang2016/kookappblockads/main/block-kook-ads-api.js
-    interval: 86400
+    interval: 3600
   block-kook-ads-resp:
     url: https://raw.githubusercontent.com/yangliang2016/kookappblockads/main/block-kook-ads-response.js
-    interval: 86400
+    interval: 3600
