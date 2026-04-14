@@ -30,6 +30,9 @@ var AD_PATTERNS = [
   /\/card\/recommend/,
   /\/market/,
   /\/mall/,
+  /\/discover\//,
+  /\/explore\//,
+  /\/recommend\//,
 ];
 
 if (!AD_PATTERNS.some(function(p) { return p.test(url); })) {

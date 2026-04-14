@@ -33,6 +33,9 @@ var BLOCK_PATTERNS = [
   /\/card\/recommend/,
   /\/market/,
   /\/mall/,
+  /\/discover\//,
+  /\/explore\//,
+  /\/recommend\//,
 ];
 
 var EMPTY = '{"code":0,"data":{"list":[],"items":[],"total":0,"has_more":false}}';
