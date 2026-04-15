@@ -21,6 +21,7 @@ var AD_PATTERNS = [
   /\/product-category/,
   /\/item\/token-count/,
   /\/item\/bag/,
+  /\/item\/list/,
   /\/activity/,
   /\/coupon/,
   /\/redpacket/,
@@ -33,6 +34,7 @@ var AD_PATTERNS = [
   /\/discover\//,
   /\/explore\//,
   /\/recommend\//,
+  /\/vip-expression/,
 ];
 
 if (!AD_PATTERNS.some(function(p) { return p.test(url); })) {

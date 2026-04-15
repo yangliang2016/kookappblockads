@@ -7,6 +7,9 @@ http:
     # ── 第三方追踪统计 ──────────────────────────────────────────────────────
     - ^https?://open\.e\.kuaishou\.com/ - reject
     - ^https?://umt-data-u1\.ubixioe\.com/ - reject
+    # SSP 广告交换平台（xcultur 供应方平台）
+    - ^https?://api\.ssp\.xcultur\.com/ - reject
+    - ^https?://[^/]*\.xcultur\.com/ - reject
     # 淘宝 / 高德联盟追踪（Kook 内嵌 Alibaba SDK）
     - ^https?://[^/]*\.taobao\.com/ - reject
     - ^https?://[^/]*\.amap\.com/ - reject
@@ -28,9 +31,14 @@ http:
     - ^https?://[^/]*\.?kookapp\.cn/api/[^?]*product/list - reject
     - ^https?://[^/]*\.?kookapp\.cn/api/[^?]*product/red-dot - reject
     - ^https?://[^/]*\.?kookapp\.cn/api/[^?]*announce - reject
+    - ^https?://[^/]*\.?kookapp\.cn/api/[^?]*vip-expression - reject
+    - ^https?://[^/]*\.?kookapp\.cn/api/[^?]*item/bag - reject
+    - ^https?://[^/]*\.?kookapp\.cn/api/[^?]*item/list - reject
+    - ^https?://[^/]*\.?kookapp\.cn/api/[^?]*item/token-count - reject
     - ^https?://[^/]*\.?kaiheila\.cn/api/[^?]*promotion - reject
     - ^https?://[^/]*\.?kaiheila\.cn/api/[^?]*discover - reject
     - ^https?://[^/]*\.?kaiheila\.cn/api/[^?]*ad-placement - reject
+    - ^https?://[^/]*\.?kaiheila\.cn/api/[^?]*vip-expression - reject
 
   script:
     # Universal Link 阻断：返回空 AASA，让 iOS 放弃注册跳转
@@ -101,6 +109,7 @@ http:
     - "kaiheila.cn"
     - "open.e.kuaishou.com"
     - "umt-data-u1.ubixioe.com"
+    - "api.ssp.xcultur.com"
 
 script-providers:
   block-kook-aasa:

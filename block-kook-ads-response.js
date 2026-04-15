@@ -24,6 +24,7 @@ var BLOCK_PATTERNS = [
   /\/product-category/,
   /\/item\/token-count/,
   /\/item\/bag/,
+  /\/item\/list/,
   /\/activity/,
   /\/coupon/,
   /\/redpacket/,
@@ -36,6 +37,7 @@ var BLOCK_PATTERNS = [
   /\/discover\//,
   /\/explore\//,
   /\/recommend\//,
+  /\/vip-expression/,
 ];
 
 var EMPTY = '{"code":0,"data":{"list":[],"items":[],"total":0,"has_more":false}}';
@@ -64,10 +66,18 @@ var AD_KEYS = {
   advert: 1, adverts: 1, advertisement: 1, advertisements: 1,
   banner: 1, banners: 1, banner_ad: 1, bannerAd: 1,
   popup: 1, popups: 1, popup_ad: 1, popupAd: 1,
+  dialog: 1, dialogs: 1, dialogAd: 1, dialog_ad: 1,
+  modal: 1, modals: 1, modalAd: 1, modal_ad: 1,
+  notice: 1, notices: 1, noticeList: 1, notice_list: 1,
+  notification: 1, notifications: 1,
+  guide: 1, guides: 1, guideList: 1, guide_list: 1,
+  tip: 1, tips: 1, tipList: 1, tip_list: 1,
   promotion: 1, promotions: 1, promotionList: 1, promotion_list: 1,
   recommendAds: 1, recommend_ads: 1,
-  floatAd: 1, float_ad: 1,
+  floatAd: 1, float_ad: 1, floatWindow: 1, float_window: 1,
   marketBanner: 1, market_banner: 1,
+  vipGuide: 1, vip_guide: 1, vipAd: 1, vip_ad: 1,
+  shopGuide: 1, shop_guide: 1,
 };
 
 function clean(v) {
